@@ -1,0 +1,30 @@
+<style>
+    body {
+  background-image: url("https://www.mwallpapers.com/download-image/34395/2560x1600");
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-attachment: fixed;
+    }
+</style>
+
+<body>
+
+    {% extends 'base.html' %}
+
+    {% import 'macros.html' as macro %}
+
+    <!-- Content Block-->
+    {% block content %}
+    <div class="container">
+        <h3 class="text-center"> Top Stories </h3>
+        <hr>
+        {{ macro.displayNewsList(top) }}
+    </div>
+    </div>
+
+    {% endblock %}
+
+
+</body>
+
+</html>
