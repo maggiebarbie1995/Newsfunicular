@@ -58,9 +58,9 @@ Now navigate to your browser at: ```localhost:5000```
 ## Support and contact details
 call me on
 
-<img src="https://bit.ly/2H4L6UZ" width="109" style="border-radius:50%;">:0770465494
+<img src="https://bit.ly/2H4L6UZ" width="109" style="border-radius:50%;">:0710176726
 
-<img src="https://bit.ly/383xk0Z" width="109" style="border-radius:50%;">:0710176726
+<img src="https://bit.ly/383xk0Z" width="109" style="border-radius:50%;">:0770465494
  
  <img src="https://bit.ly/2Smueyp" width="109" style="border-radius:50%;">:maggylangakush@gmail.com
 

@@ -1,6 +1,7 @@
-import urllib.request
-import json
-from .models import News, Sources
+import urllib.request,json
+from .models import Articles, Sources
+import os
+from datetime import datetime
 
 
 # getting api key
@@ -11,111 +12,76 @@ api_key = None
 
 base_url = None
 
+# getting the articles url
+articles_url = None
 
 def configure_request(app):
-    global api_key, base_url
-    api_key = app.config["NEWS_API_KEY"]
-    base_url = app.config["NEWS_API_BASE_URL"]
+    global api_key,base_url,articles_url
+    api_key = app.config['API_KEY']
+    print (api_key)
+    base_url = app.config['NEWS_SOURCES_BASE_URL']
+    print(base_url)
+    articles_url = app.config['ARTICLES_BASE_URL']
 
-
-def get_news(category):
+    def get_sources(category):
     '''
-    Function that gets json response to our url request
+    Function that gets the json response to our url request
     '''
-
-    get_news_url = base_url.format(category, api_key)
-
-    with urllib.request.urlopen(get_news_url) as url:
-        get_news_data = url.read()
-        get_news_response = json.loads(get_news_data)
-
-        news_results = None
-
-        if get_news_response["articles"]:
-            news_results_list = get_news_response["articles"]
-            news_results = process_results(news_results_list)
-
-    return news_results
-
-
-def search_news(topic):
-    '''
-    Function to search for news by topic
-    '''
-
-    search_news_url = "https://newsapi.org/v2/everything?q={}&apiKey={}".format(topic, api_key)
-
-    with urllib.request.urlopen(search_news_url) as url:
-        search_news_data = url.read()
-        search_news_response = json.loads(search_news_data)
-
-        search_news_results = None
-        if search_news_response["articles"]:
-            search_news_list = search_news_response["articles"]
-            search_news_results = process_results(search_news_list)
-
-    return search_news_results
-
-
-def sources_news():
-    '''
-    Function to search news sources
-    '''
-    sources_url = "https:/newsapi.org/v2/sources?apiKey{}".format(api_key)
-
-    with urllib.request.urlopen(sources_url) as url:
-        search_sources_data = url.read()
-        search_sources_response = json.loads(search_sources_data)
-
-        search_sources_results = None
-        if search_sources_response["sources"]:
-            search_sources_list = search_sources_response["sources"]
-            search_sources_results = process_sources(search_sources_list)
-
-    return search_sources_results
-
-
-def process_results(news_list):
-    '''
-    Function that processes the news result and transform them to a list of Objects
-    Args:
-        news_list: A list of dictionaries that contain movie details
-    Returns:
-        news_results: A list of news objects
-    '''
-
-    news_results = []
-
-    for news_item in news_list:
-        author = news_item.get("author")
-        title = news_item.get("title")
-        description = news_item.get("description")
-        url = news_item.get("url")
-        urlToImage = news_item.get("urlToImage")
-        content = news_item.get("content")
-
-        if urlToImage:
-            news_object = News(author, title, description, url, urlToImage, content)
-            news_results.append(news_object)
-
-    return news_results
+    get_sources_url = base_url.format(api_key)
+    with urllib.request.urlopen(get_sources_url) as url:
+        get_sources_data = url.read()
+        get_sources_response = json.loads(get_sources_data)
+        print(get_sources_url)
+        sources_results = None
+        if get_sources_response['sources']:
+            sources_results_list = get_sources_response['sources']
+            sources_results = process_sources(sources_results_list)
+    return sources_results
 
 
 def process_sources(sources_list):
     '''
-
+    Function that processes the news sources results and turns them into a list of objects
+    Args:
+        sources_list: A list of dictionaries that contain sources details
+    Returns:
+        sources_results: A list of sources objects
     '''
     sources_results = []
+    for source_item in sources_list:
+        id = source_item['id']
+        name = source_item['name']
+        description = source_item['description']
+        url = source_item['url']
+        category = source_item['category']
+        language = source_item['language']
+        country = source_item['country']
+        sources_object = Sources(id,name,description,url,category,country,language)
+        sources_results.append(sources_object)
+    return sources_results
 
-    for sources_item in sources_list:
-        id = sources_item.get("id")
-        name = sources_item.get("name")
-        description = sources_item.get("description")
-        url = sources_item.get("url")
-        category = sources_item.get("category")
-
-        if url:
-            sources_object = Sources(id, name, description, url, category)
-            sources_results.append(sources_object)
-
-            return sources_results
+def get_articles(id):
+  '''
+    Function that processes the articles and returns a list of articles objects
+    '''
+  get_articles_url = articles_url.format(id,api_key)
+  with urllib.request.urlopen(get_articles_url) as url:
+            articles_results = json.loads(url.read())
+            articles_object = None
+            if articles_results['articles']:
+                articles_object = process_articles(articles_results['articles'])
+            return articles_object
+def process_articles(articles_list):
+    articles_object = []
+    for article_item in articles_list:
+        # id = article_item['id']
+        author = article_item['author']
+        title = article_item['title']
+        description = article_item['description']
+        url = article_item['url']
+        image = article_item['urlToImage']
+        date = article_item['publishedAt']
+        if image:
+            articles_result = Articles(id,author,title,description,url,image,date)
+            articles_object.append(articles_result)
+    return articles_object
