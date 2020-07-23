@@ -23,7 +23,7 @@ def configure_request(app):
     print(base_url)
     articles_url = app.config['ARTICLES_BASE_URL']
 
-    def get_sources(category):
+def get_sources(category):
     '''
     Function that gets the json response to our url request
     '''
@@ -53,19 +53,17 @@ def process_sources(sources_list):
         name = source_item['name']
         description = source_item['description']
         url = source_item['url']
-        category = source_item['category']
-        language = source_item['language']
-        country = source_item['country']
-        sources_object = Sources(id,name,description,url,category,country,language)
+        category = source_item['category']        
+        sources_object = Sources(id,name,description,url,category)
         sources_results.append(sources_object)
     return sources_results
 
 def get_articles(id):
-  '''
+    '''
     Function that processes the articles and returns a list of articles objects
     '''
-  get_articles_url = articles_url.format(id,api_key)
-  with urllib.request.urlopen(get_articles_url) as url:
+    get_articles_url = articles_url.format(id,api_key)
+    with urllib.request.urlopen(get_articles_url) as url:
             articles_results = json.loads(url.read())
             articles_object = None
             if articles_results['articles']:
