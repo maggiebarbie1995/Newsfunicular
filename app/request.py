@@ -69,10 +69,11 @@ def get_articles(id):
             if articles_results['articles']:
                 articles_object = process_articles(articles_results['articles'])
             return articles_object
+            
 def process_articles(articles_list):
     articles_object = []
     for article_item in articles_list:
-        # id = article_item['id']
+        id = article_item['id']
         author = article_item['author']
         title = article_item['title']
         description = article_item['description']
